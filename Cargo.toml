@@ -1,6 +1,56 @@
-[package]
+[[bin]]
+name = "PEliminate"
+path = "Source/Library.rs"
+
+[[bin]]
 name = "Eliminate"
-version = "0.1.0"
-edition = "2024"
+path = "Source/Library.rs"
 
 [dependencies]
+# pieces = { version = "1.0.0", path = "../Pieces" }
+chrono = { version = "0.4.39" }
+clap = { features = ["derive"], version = "4.5.23" }
+dashmap = { version = "6.1.0" }
+futures = { version = "0.3.31" }
+git2 = { version = "0.19.0" }
+itertools = { version = "0.13.0" }
+num_cpus = { version = "1.16.0" }
+rayon = { version = "1.10.0" }
+regex = { version = "1.11.1" }
+tokio = { version = "1.42.0", features = ["full"] }
+unbug = { version = "0.4.0", features = ["enable"] }
+walkdir = { version = "2.5.0" }
+
+[build-dependencies]
+serde = { version = "1.0.216", features = ["derive"] }
+toml = { version = "0.8.19" }
+
+[lib]
+crate-type = ["staticlib", "cdylib", "rlib"]
+name = "Library"
+path = "Source/Library.rs"
+
+[package]
+autobenches = false
+autobins = false
+autoexamples = false
+autotests = false
+default-run = "Eliminate"
+description = "🗣️ Eliminate —"
+license-file = "LICENSE"
+name = "psummary"
+repository = "https://github.com/PlayForm/Eliminate.git"
+version = "0.1.4"
+edition = "2021"
+include = [
+	"Source/**/*",
+	"LICENSE",
+	"README.md",
+	"CHANGELOG.md",
+	"build.rs",
+	"Cargo.toml",
+]
+
+[features]
+default = []
+Debug = ["unbug/enable"]
