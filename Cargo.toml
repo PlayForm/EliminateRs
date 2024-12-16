@@ -18,7 +18,7 @@ num_cpus = { version = "1.16.0" }
 rayon = { version = "1.10.0" }
 regex = { version = "1.11.1" }
 tokio = { version = "1.42.0", features = ["full"] }
-unbug = { version = "0.4.0", features = ["enable"] }
+unbug = { version = "0.4.0" }
 walkdir = { version = "2.5.0" }
 
 [build-dependencies]
@@ -53,4 +53,3 @@ include = [
 
 [features]
 default = []
-Debug = ["unbug/enable"]
