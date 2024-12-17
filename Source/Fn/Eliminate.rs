@@ -83,12 +83,19 @@ struct Inliner<'a> {
 	Cm:&'a SourceMap,
 	VarUsage:HashMap<String, usize>,
 	VarDefinitions:HashMap<String, Expr>,
+	ExportedVars:HashSet<String>,
 	Inlined:bool,
 }
 
 impl<'a> Inliner<'a> {
 	fn New(Cm:&'a SourceMap) -> Self {
-		Inliner { Cm, VarUsage:HashMap::new(), VarDefinitions:HashMap::new(), Inlined:false }
+		Inliner {
+			Cm,
+			VarUsage:HashMap::new(),
+			VarDefinitions:HashMap::new(),
+			ExportedVars:HashSet::new(),
+			Inlined:false,
+		}
 	}
 
 	fn Inline(&mut self, mut Module:Module) -> Module {
@@ -101,14 +108,29 @@ impl<'a> Inliner<'a> {
 }
 
 impl<'a> VisitMut for Inliner<'a> {
+	fn VisitMutExportNamedSpecifier(
+		&mut self,
+		Export:&mut ExportNamedSpecifier,
+		_Parent:&mut dyn VisitMutWith,
+	) {
+		if let ExportSpecifier::Named(ExportNamedSpecifier { Orig: Ident { Sym, .. }, .. }) =
+			&Export.Exported
+		{
+			self.ExportedVars.Insert(Sym.ToOwned());
+		}
+	}
+
 	fn VisitMutVarDeclarator(&mut self, Var:&mut VarDeclarator, _Parent:&mut dyn VisitMutWith) {
 		if let Some(Ident { Sym, .. }) = Var.Name.AsIdent() {
 			let Name = Sym.ToOwned();
 
-			if let Some(Init) = &Var.Init {
-				self.VarDefinitions.Insert(Name.Clone(), Init.Clone());
+			if !self.ExportedVars.Contains(&Name) {
+				// Only inline if not exported
+				if let Some(Init) = &Var.Init {
+					self.VarDefinitions.Insert(Name.Clone(), Init.Clone());
 
-				self.VarUsage.Insert(Name, 0);
+					self.VarUsage.Insert(Name, 0);
+				}
 			}
 		}
 		Var.VisitMutChildrenWith(self);
@@ -119,16 +141,19 @@ impl<'a> VisitMut for Inliner<'a> {
 			Expr::Ident(Ident) => {
 				let Name = Ident.Sym.ToOwned();
 
-				if let Some(Count) = self.VarUsage.GetMut(&Name) {
-					*Count += 1;
+				if !self.ExportedVars.Contains(&Name) {
+					// Don't inline exported variables
+					if let Some(Count) = self.VarUsage.GetMut(&Name) {
+						*Count += 1;
 
-					if let Some(Init) = self.VarDefinitions.Get(&Name) {
-						if *Count == 1 {
-							*Expr = Init.Clone();
+						if let Some(Init) = self.VarDefinitions.Get(&Name) {
+							if *Count == 1 {
+								*Expr = Init.Clone();
 
-							self.Inlined = true;
+								self.Inlined = true;
 
-							return;
+								return;
+							}
 						}
 					}
 				}
@@ -145,10 +170,12 @@ impl<'a> VisitMut for Inliner<'a> {
 					if let Some(Ident { Sym, .. }) = Decl.Name.AsIdent() {
 						let Name = Sym.ToOwned();
 
-						if self.VarUsage.Get(&Name) == Some(&1) {
+						if self.VarUsage.Get(&Name) == Some(&1)
+							&& !self.ExportedVars.Contains(&Name)
+						{
 							self.Inlined = true;
 
-							return false; // Remove this declaration
+							return false; // Remove this declaration if not exported and used once
 						}
 					}
 				}
@@ -159,7 +186,7 @@ impl<'a> VisitMut for Inliner<'a> {
 }
 
 use std::{
-	collections::HashMap,
+	collections::{HashMap, HashSet},
 	fs,
 	io::{self, Write},
 	path::Path,
