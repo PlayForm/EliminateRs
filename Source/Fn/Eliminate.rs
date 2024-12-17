@@ -65,6 +65,20 @@ fn process_file_recursive(path:&Path) -> Result<String, Box<dyn std::error::Erro
 	Ok(String::from_utf8(buf)?)
 }
 
+// Helper function to convert to title case
+fn to_title_case(s:&str) -> String {
+	s.chars()
+		.enumerate()
+		.map(|(i, c)| {
+			if i == 0 {
+				c.to_uppercase().next().unwrap()
+			} else {
+				c.to_lowercase().next().unwrap()
+			}
+		})
+		.collect()
+}
+
 struct Inliner<'a> {
 	cm:&'a SourceMap,
 	var_usage:HashMap<String, usize>,
@@ -87,13 +101,15 @@ impl<'a> Inliner<'a> {
 
 impl<'a> VisitMut for Inliner<'a> {
 	fn visit_mut_var_declarator(&mut self, var:&mut VarDeclarator, _parent:&mut dyn VisitMutWith) {
-		if let Some(Ident { sym, .. }) = var.name.as_ident() {
+		if let Some(Ident { sym, .. }) = var.name.as_ident_mut() {
 			let name = sym.to_string();
 
-			if let Some(init) = &var.init {
-				self.var_definitions.insert(name.clone(), init.clone());
+			*sym = to_title_case(&name).into();
 
-				self.var_usage.insert(name, 0);
+			if let Some(init) = &var.init {
+				self.var_definitions.insert(sym.to_string(), init.clone());
+
+				self.var_usage.insert(sym.to_string(), 0);
 			}
 		}
 		var.visit_mut_children_with(self);
@@ -117,6 +133,8 @@ impl<'a> VisitMut for Inliner<'a> {
 						}
 					}
 				}
+				// Convert the identifier to title case if not inlined
+				ident.sym = to_title_case(&name).into();
 			},
 			_ => {},
 		}
