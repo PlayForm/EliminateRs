@@ -7,7 +7,7 @@ fn main() -> io::Result<()> {
 	];
 
 	Paths.par_iter().for_each(|Path| {
-		if let Err(E) = ProcessFileRecursive(Path).and_then(|Content| fs::Write(Path, Content)) {
+		if let Err(E) = ProcessFileRecursive(Path).and_then(|Content| fs::write(Path, Content)) {
 			eprintln!("Error processing {:?}: {}", Path, E);
 		} else {
 			println!("Processed: {:?}", Path);
@@ -128,15 +128,21 @@ impl<'a> VisitMut for Inliner<'a> {
 		Export:&mut ExportNamedSpecifier,
 		_Parent:&mut dyn VisitMutWith,
 	) {
-		if let Some(ModuleExportName::Ident(Ident { sym, .. })) = &Export.exported {
+		if let ModuleExportName::Ident(Ident { sym, .. }) = &Export.orig {
 			self.ExportedVars.insert(sym.to_string());
 		}
 	}
 
 	/// Registers variable declarations for possible inlining, but only
 	/// if the variable isn't exported.
-	fn visit_mut_var_declarator(&mut self, Var:&mut VarDeclarator, _Parent:&mut dyn VisitMutWith) {
-		if let Pat::Ident(BindingIdent { id: Name, .. }) = Var.name {
+	fn visit_mut_var_declarator(
+		&mut self,
+		Var:&mut VarDeclarator,
+		_Parent:&mut dyn VisitMutWith<Self>,
+	) {
+		if let Pat::Ident(BindingIdent { id, .. }) = Var.name {
+			let Name:String = id.sym.to_string(); // Convert to String right away
+
 			if !self.ExportedVars.contains(&Name) {
 				// Only inline if not exported
 				if let Some(Init) = &Var.init {
@@ -154,8 +160,8 @@ impl<'a> VisitMut for Inliner<'a> {
 	/// variables.
 	fn visit_mut_expr(&mut self, Expr:&mut Expr, _Parent:&mut dyn VisitMutWith) {
 		match Expr {
-			Expr::Ident(Ident) => {
-				let Name = Ident.sym.to_owned();
+			Expr::Ident(Ident { sym, .. }) => {
+				let Name = sym.to_string();
 
 				if !self.ExportedVars.contains(&Name) {
 					// Don't inline exported variables
