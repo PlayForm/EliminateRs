@@ -213,7 +213,9 @@ use std::{
 };
 
 use rayon::prelude::*;
-use swc_common::{FileName, SourceMap};
+use swc_common::{FileName, FilePathMapping, SourceMap};
 use swc_ecma_ast::*;
+use swc_ecma_code_gen::{Config, Emitter, text_writer::JsWriter};
 use swc_ecma_parser::{Parser, StringInput, Syntax, lexer::Lexer};
 use swc_ecma_visit::{VisitMut, VisitMutWith};
+use tempfile::NamedTempFile;
