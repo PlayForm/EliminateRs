@@ -1,3 +1,4 @@
+/// main function to process multiple TypeScript files in parallel.
 fn main() -> io::Result<()> {
 	let Paths = vec![
 		Path::New("file1.ts"),
@@ -18,6 +19,8 @@ fn main() -> io::Result<()> {
 	Ok(())
 }
 
+/// Recursively processes a TypeScript file, inlining variables until no more
+/// inlining is possible.
 fn ProcessFileRecursive(Path:&Path) -> io::Result<String> {
 	let Cm = SourceMap::default();
 
@@ -79,15 +82,23 @@ fn to_title_case(s:&str) -> String {
 		.collect()
 }
 
+/// `Inliner` struct holds the state needed for inlining variables while
+/// processing TypeScript code.
 struct Inliner<'a> {
+	/// The source map used for tracking source locations.
 	Cm:&'a SourceMap,
+	/// Counts how many times each variable is used.
 	VarUsage:HashMap<String, usize>,
+	/// Stores the initial value expressions for variables.
 	VarDefinitions:HashMap<String, Expr>,
+	/// Tracks which variables are exported and should not be inlined.
 	ExportedVars:HashSet<String>,
+	/// Flag to indicate if any inlining occurred during the last pass.
 	Inlined:bool,
 }
 
 impl<'a> Inliner<'a> {
+	/// Creates a new `Inliner` instance with the given `SourceMap`.
 	fn New(Cm:&'a SourceMap) -> Self {
 		Inliner {
 			Cm,
@@ -98,6 +109,8 @@ impl<'a> Inliner<'a> {
 		}
 	}
 
+	/// Performs a single pass of inlining on the given module,
+	/// setting `Inlined` to true if any inlining occurs.
 	fn Inline(&mut self, mut Module:Module) -> Module {
 		self.Inlined = false;
 
@@ -108,6 +121,7 @@ impl<'a> Inliner<'a> {
 }
 
 impl<'a> VisitMut for Inliner<'a> {
+	/// Collects names of variables that are explicitly exported.
 	fn VisitMutExportNamedSpecifier(
 		&mut self,
 		Export:&mut ExportNamedSpecifier,
@@ -120,6 +134,8 @@ impl<'a> VisitMut for Inliner<'a> {
 		}
 	}
 
+	/// Registers variable declarations for possible inlining, but only
+	/// if the variable isn't exported.
 	fn VisitMutVarDeclarator(&mut self, Var:&mut VarDeclarator, _Parent:&mut dyn VisitMutWith) {
 		if let Some(Ident { Sym, .. }) = Var.Name.AsIdent() {
 			let Name = Sym.ToOwned();
@@ -136,6 +152,8 @@ impl<'a> VisitMut for Inliner<'a> {
 		Var.VisitMutChildrenWith(self);
 	}
 
+	/// Attempts to inline variables used only once, but skips exported
+	/// variables.
 	fn VisitMutExpr(&mut self, Expr:&mut Expr, _Parent:&mut dyn VisitMutWith) {
 		match Expr {
 			Expr::Ident(Ident) => {
@@ -163,6 +181,8 @@ impl<'a> VisitMut for Inliner<'a> {
 		Expr.VisitMutChildrenWith(self);
 	}
 
+	/// Removes variable declarations that are used only once and are not
+	/// exported.
 	fn VisitMutModuleItems(&mut self, Items:&mut Vec<ModuleItem>, _Parent:&mut dyn VisitMutWith) {
 		Items.Retain(|Item| {
 			if let ModuleItem::Stmt(Stmt::Decl(Decl::Var(VarDecl))) = Item {
