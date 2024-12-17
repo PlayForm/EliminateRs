@@ -126,7 +126,6 @@ impl<'a> VisitMut for Inliner<'a> {
 	fn visit_mut_export_named_specifier(
 		&mut self,
 		Export:&mut ExportNamedSpecifier,
-		_Parent:&mut dyn VisitMutWith,
 	) {
 		if let ModuleExportName::Ident(Ident { sym, .. }) = &Export.orig {
 			self.ExportedVars.insert(sym.to_string());
@@ -138,7 +137,6 @@ impl<'a> VisitMut for Inliner<'a> {
 	fn visit_mut_var_declarator(
 		&mut self,
 		Var:&mut VarDeclarator,
-		_Parent:&mut dyn VisitMutWith<Self>,
 	) {
 		if let Pat::Ident(BindingIdent { id, .. }) = Var.name {
 			let Name:String = id.sym.to_string(); // Convert to String right away
@@ -146,9 +144,9 @@ impl<'a> VisitMut for Inliner<'a> {
 			if !self.ExportedVars.contains(&Name) {
 				// Only inline if not exported
 				if let Some(Init) = &Var.init {
-					self.VarDefinitions.insert(Name.to_string(), (**Init).clone());
+					self.VarDefinitions.insert(Name.clone(), (**Init).clone());
 
-					self.VarUsage.insert(Name.to_string(), 0);
+					self.VarUsage.insert(Name, 0);
 				}
 			}
 		}
@@ -190,8 +188,7 @@ impl<'a> VisitMut for Inliner<'a> {
 	/// exported.
 	fn visit_mut_module_items(
 		&mut self,
-		Items:&mut Vec<ModuleItem>,
-		_Parent:&mut dyn VisitMutWith,
+		Items:&mut Vec<ModuleItem>
 	) {
 		Items.retain(|Item| {
 			if let ModuleItem::Stmt(Stmt::Decl(Decl::Var(VarDecl))) = Item {
