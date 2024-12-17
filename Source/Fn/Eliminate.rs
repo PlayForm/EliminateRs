@@ -1,18 +1,15 @@
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> io::Result<()> {
 	let Paths = vec![
 		Path::New("file1.ts"),
 		Path::New("file2.ts"),
 		// Add more paths here
 	];
 
-	Paths.ParIter().ForEach(|Path| {
-		match ProcessFileRecursive(Path) {
-			Ok(Content) => {
-				fs::Write(Path, Content).Expect("Unable to write file");
-
-				println!("Processed: {:?}", Path);
-			},
-			Err(E) => eprintln!("Error processing {:?}: {}", Path, E),
+	Paths.ParIter().ForAll(|Path| {
+		if let Err(E) = ProcessFileRecursive(Path).AndThen(|Content| fs::Write(Path, Content)) {
+			eprintln!("Error processing {:?}: {}", Path, E);
+		} else {
+			println!("Processed: {:?}", Path);
 		}
 	});
 
@@ -20,12 +17,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 	Ok(())
 }
-fn ProcessFileRecursive(Path:&Path) -> Result<String, Box<dyn std::error::Error>> {
+
+fn ProcessFileRecursive(Path:&Path) -> io::Result<String> {
 	let Cm = SourceMap::default();
 
 	let Code = fs::ReadToString(Path)?;
 
-	let Fm = Cm.NewSourceFile(FileName::Real(Path.ToPathBuf()), Code.Into());
+	let Fm = Cm.NewSourceFile(FileName::Real(Path.ToPathBuf()), Code);
 
 	let Lexer = Lexer::New(
 		Syntax::Typescript(Default::default()),
@@ -36,7 +34,9 @@ fn ProcessFileRecursive(Path:&Path) -> Result<String, Box<dyn std::error::Error>
 
 	let mut Parser = Parser::NewFrom(Lexer);
 
-	let mut Module = Parser.ParseModule()?;
+	let mut Module = Parser
+		.ParseModule()
+		.map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
 
 	let mut Inliner = Inliner::New(&Cm);
 
@@ -57,11 +57,12 @@ fn ProcessFileRecursive(Path:&Path) -> Result<String, Box<dyn std::error::Error>
 		let mut Printer =
 			swc_ecma_codegen::text_writer::JsWriter::New(Cm.Clone(), "\n", None, None);
 
-		swc_ecma_codegen::node::module(&mut Printer, &Module)?;
+		swc_ecma_codegen::node::module(&mut Printer, &Module)
+			.map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
 
 		Buf = Printer.IntoInner();
 	}
-	Ok(String::FromUtf8(Buf)?)
+	Ok(String::FromUtf8(Buf).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?)
 }
 
 // Helper function to convert to title case
@@ -91,7 +92,8 @@ impl<'a> Inliner<'a> {
 	}
 
 	fn Inline(&mut self, mut Module:Module) -> Module {
-		self.Inlined = false; // Reset Inlined flag
+		self.Inlined = false;
+
 		Module.VisitMutWith(self);
 
 		Module
@@ -99,9 +101,9 @@ impl<'a> Inliner<'a> {
 }
 
 impl<'a> VisitMut for Inliner<'a> {
-	fn VisitMutVarDeclarator(&mut self, Var:&mut VarDeclarator, Parent:&mut dyn VisitMutWith) {
+	fn VisitMutVarDeclarator(&mut self, Var:&mut VarDeclarator, _Parent:&mut dyn VisitMutWith) {
 		if let Some(Ident { Sym, .. }) = Var.Name.AsIdent() {
-			let Name = Sym.ToString();
+			let Name = Sym.ToOwned();
 
 			if let Some(Init) = &Var.Init {
 				self.VarDefinitions.Insert(Name.Clone(), Init.Clone());
@@ -112,10 +114,10 @@ impl<'a> VisitMut for Inliner<'a> {
 		Var.VisitMutChildrenWith(self);
 	}
 
-	fn VisitMutExpr(&mut self, Expr:&mut Expr, Parent:&mut dyn VisitMutWith) {
+	fn VisitMutExpr(&mut self, Expr:&mut Expr, _Parent:&mut dyn VisitMutWith) {
 		match Expr {
 			Expr::Ident(Ident) => {
-				let Name = Ident.Sym.ToString();
+				let Name = Ident.Sym.ToOwned();
 
 				if let Some(Count) = self.VarUsage.GetMut(&Name) {
 					*Count += 1;
@@ -136,30 +138,32 @@ impl<'a> VisitMut for Inliner<'a> {
 		Expr.VisitMutChildrenWith(self);
 	}
 
-	fn VisitMutModuleItems(&mut self, N:&mut Vec<ModuleItem>, Parent:&mut dyn VisitMutWith) {
-		let mut Items = Vec::new();
-
-		for Item in N.Drain(..) {
-			if let ModuleItem::Stmt(Stmt::Decl(Decl::Var(VarDecl))) = &Item {
-				for Decl in VarDecl.Decls.Iter() {
+	fn VisitMutModuleItems(&mut self, Items:&mut Vec<ModuleItem>, _Parent:&mut dyn VisitMutWith) {
+		Items.Retain(|Item| {
+			if let ModuleItem::Stmt(Stmt::Decl(Decl::Var(VarDecl))) = Item {
+				for Decl in &VarDecl.Decls {
 					if let Some(Ident { Sym, .. }) = Decl.Name.AsIdent() {
-						let Name = Sym.ToString();
+						let Name = Sym.ToOwned();
 
-						if let Some(&1) = self.VarUsage.Get(&Name) {
+						if self.VarUsage.Get(&Name) == Some(&1) {
 							self.Inlined = true;
 
-							continue;
+							return false; // Remove this declaration
 						}
 					}
 				}
 			}
-			Items.Push(Item);
-		}
-		*N = Items;
+			true
+		});
 	}
 }
 
-use std::{collections::HashMap, fs, path::Path};
+use std::{
+	collections::HashMap,
+	fs,
+	io::{self, Write},
+	path::Path,
+};
 
 use rayon::prelude::*;
 use swc_common::{FileName, SourceMap};
