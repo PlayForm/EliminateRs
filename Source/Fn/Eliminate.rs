@@ -1,13 +1,13 @@
 /// main function to process multiple TypeScript files in parallel.
 fn main() -> io::Result<()> {
 	let Paths = vec![
-		Path::New("file1.ts"),
-		Path::New("file2.ts"),
+		Path::new("file1.ts"),
+		Path::new("file2.ts"),
 		// Add more paths here
 	];
 
-	Paths.ParIter().ForAll(|Path| {
-		if let Err(E) = ProcessFileRecursive(Path).AndThen(|Content| fs::Write(Path, Content)) {
+	Paths.par_iter().for_each(|Path| {
+		if let Err(E) = ProcessFileRecursive(Path).and_then(|Content| fs::Write(Path, Content)) {
 			eprintln!("Error processing {:?}: {}", Path, E);
 		} else {
 			println!("Processed: {:?}", Path);
@@ -26,12 +26,12 @@ fn ProcessFileRecursive(Path:&Path) -> io::Result<String> {
 
 	let Code = fs::ReadToString(Path)?;
 
-	let Fm = Cm.NewSourceFile(FileName::Real(Path.ToPathBuf()), Code);
+	let Fm = Cm.new_source_file(FileName::Real(Path.to_path_buf()), Code);
 
-	let Lexer = Lexer::New(
+	let Lexer = Lexer::new(
 		Syntax::Typescript(Default::default()),
 		Default::default(),
-		StringInput::From(&*Fm),
+		StringInput::from(&*Fm),
 		None,
 	);
 
