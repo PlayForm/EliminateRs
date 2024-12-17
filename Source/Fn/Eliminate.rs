@@ -1,18 +1,18 @@
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-	let paths = vec![
+	let Paths = vec![
 		Path::new("file1.ts"),
 		Path::new("file2.ts"),
 		// Add more paths here
 	];
 
-	paths.par_iter().for_each(|path| {
-		match process_file_recursive(path) {
-			Ok(content) => {
-				fs::write(path, content).expect("Unable to write file");
+	Paths.par_iter().for_each(|Path| {
+		match ProcessFileRecursive(Path) {
+			Ok(Content) => {
+				fs::write(Path, Content).expect("Unable to write file");
 
-				println!("Processed: {:?}", path);
+				println!("Processed: {:?}", Path);
 			},
-			Err(e) => eprintln!("Error processing {:?}: {}", path, e),
+			Err(E) => eprintln!("Error processing {:?}: {}", Path, E),
 		}
 	});
 
@@ -21,48 +21,48 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 	Ok(())
 }
 
-fn process_file_recursive(path:&Path) -> Result<String, Box<dyn std::error::Error>> {
-	let cm = SourceMap::default();
+fn ProcessFileRecursive(Path:&Path) -> Result<String, Box<dyn std::error::Error>> {
+	let Cm = SourceMap::default();
 
-	let code = fs::read_to_string(path)?;
+	let Code = fs::read_to_string(Path)?;
 
-	let fm = cm.new_source_file(FileName::Real(path.to_path_buf()), code.into());
+	let Fm = Cm.new_source_file(FileName::Real(Path.to_path_buf()), Code.into());
 
-	let lexer = Lexer::new(
+	let Lexer = Lexer::new(
 		Syntax::Typescript(Default::default()),
 		Default::default(),
-		StringInput::from(&*fm),
+		StringInput::from(&*Fm),
 		None,
 	);
 
-	let mut parser = Parser::new_from(lexer);
+	let mut Parser = Parser::new_from(Lexer);
 
-	let mut module = parser.parse_module()?;
+	let mut Module = Parser.parse_module()?;
 
-	let mut inliner = Inliner::new(&cm);
+	let mut Inliner = Inliner::New(&Cm);
 
 	loop {
-		let new_module = inliner.inline(module);
+		let New_Module = Inliner.Inline(Module);
 
-		if !inliner.inlined {
+		if !Inliner.Inlined {
 			break;
 		}
-		module = new_module;
+		Module = New_Module;
 
-		inliner = Inliner::new(&cm); // Reset for next iteration
+		Inliner = Inliner::New(&Cm); // Reset for next iteration
 	}
 
-	let mut buf = Vec::new();
+	let mut Buf = Vec::new();
 
 	{
-		let mut printer =
-			swc_ecma_codegen::text_writer::JsWriter::new(cm.clone(), "\n", None, None);
+		let mut Printer =
+			swc_ecma_codegen::text_writer::JsWriter::new(Cm.clone(), "\n", None, None);
 
-		swc_ecma_codegen::node::module(&mut printer, &module)?;
+		swc_ecma_codegen::node::module(&mut Printer, &Module)?;
 
-		buf = printer.into_inner();
+		Buf = Printer.into_inner();
 	}
-	Ok(String::from_utf8(buf)?)
+	Ok(String::from_utf8(Buf)?)
 }
 
 // Helper function to convert to title case
@@ -80,87 +80,83 @@ fn to_title_case(s:&str) -> String {
 }
 
 struct Inliner<'a> {
-	cm:&'a SourceMap,
-	var_usage:HashMap<String, usize>,
-	var_definitions:HashMap<String, Expr>,
-	inlined:bool,
+	Cm:&'a SourceMap,
+	Var_Usage:HashMap<String, usize>,
+	Var_Definitions:HashMap<String, Expr>,
+	Inlined:bool,
 }
 
 impl<'a> Inliner<'a> {
-	fn new(cm:&'a SourceMap) -> Self {
-		Inliner { cm, var_usage:HashMap::new(), var_definitions:HashMap::new(), inlined:false }
+	fn New(Cm:&'a SourceMap) -> Self {
+		Inliner { Cm, Var_Usage:HashMap::new(), Var_Definitions:HashMap::new(), Inlined:false }
 	}
 
-	fn inline(&mut self, mut module:Module) -> Module {
-		self.inlined = false; // Reset inlined flag
-		module.visit_mut_with(self);
+	fn Inline(&mut self, mut Module:Module) -> Module {
+		self.Inlined = false; // Reset Inlined flag
+		Module.visit_mut_with(self);
 
-		module
+		Module
 	}
 }
 
 impl<'a> VisitMut for Inliner<'a> {
-	fn visit_mut_var_declarator(&mut self, var:&mut VarDeclarator, _parent:&mut dyn VisitMutWith) {
-		if let Some(Ident { sym, .. }) = var.name.as_ident_mut() {
-			let name = sym.to_string();
+	fn visit_mut_var_declarator(&mut self, Var:&mut VarDeclarator, _Parent:&mut dyn VisitMutWith) {
+		if let Some(Ident { Sym, .. }) = Var.name.as_ident() {
+			let Name = Sym.to_string();
 
-			*sym = to_title_case(&name).into();
+			if let Some(Init) = &Var.init {
+				self.Var_Definitions.insert(Name.clone(), Init.clone());
 
-			if let Some(init) = &var.init {
-				self.var_definitions.insert(sym.to_string(), init.clone());
-
-				self.var_usage.insert(sym.to_string(), 0);
+				self.Var_Usage.insert(Name, 0);
 			}
 		}
-		var.visit_mut_children_with(self);
+		Var.visit_mut_children_with(self);
 	}
 
-	fn visit_mut_expr(&mut self, expr:&mut Expr, parent:&mut dyn VisitMutWith) {
-		match expr {
-			Expr::Ident(ident) => {
-				let name = ident.sym.to_string();
+	fn visit_mut_expr(&mut self, Expr:&mut Expr, Parent:&mut dyn VisitMutWith) {
+		match Expr {
+			Expr::Ident(Ident) => {
+				let Name = Ident.sym.to_string();
 
-				if let Some(count) = self.var_usage.get_mut(&name) {
-					*count += 1;
+				if let Some(Count) = self.Var_Usage.get_mut(&Name) {
+					*Count += 1;
 
-					if let Some(init) = self.var_definitions.get(&name) {
-						if *count == 1 {
-							*expr = init.clone();
+					if let Some(Init) = self.Var_Definitions.get(&Name) {
+						if *Count == 1 {
+							*Expr = Init.clone();
 
-							self.inlined = true;
+							self.Inlined = true;
 
 							return;
 						}
 					}
 				}
-				// Convert the identifier to title case if not inlined
-				ident.sym = to_title_case(&name).into();
 			},
 			_ => {},
 		}
-		expr.visit_mut_children_with(self);
+		Expr.visit_mut_children_with(self);
 	}
 
-	fn visit_mut_module_items(&mut self, n:&mut Vec<ModuleItem>, _parent:&mut dyn VisitMutWith) {
-		let mut items = Vec::new();
+	fn visit_mut_module_items(&mut self, N:&mut Vec<ModuleItem>, _Parent:&mut dyn VisitMutWith) {
+		let mut Items = Vec::new();
 
-		for item in n.drain(..) {
-			if let ModuleItem::Stmt(Stmt::Decl(Decl::Var(var_decl))) = &item {
-				for decl in var_decl.decls.iter() {
-					if let Some(Ident { sym, .. }) = decl.name.as_ident() {
-						let name = sym.to_string();
+		for Item in N.drain(..) {
+			if let ModuleItem::Stmt(Stmt::Decl(Decl::Var(Var_Decl))) = &Item {
+				for Decl in Var_Decl.decls.iter() {
+					if let Some(Ident { Sym, .. }) = Decl.name.as_ident() {
+						let Name = Sym.to_string();
 
-						if let Some(&1) = self.var_usage.get(&name) {
-							self.inlined = true;
+						if let Some(&1) = self.Var_Usage.get(&Name) {
+							self.Inlined = true;
 
 							continue;
 						}
 					}
 				}
 			}
-			items.push(item);
+			Items.push(Item);
 		}
-		*n = items;
+		*N = Items;
 	}
 }
 
