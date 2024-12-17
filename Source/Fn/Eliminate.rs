@@ -5,28 +5,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 		// Add more paths here
 	];
 
-	let results:Vec<_> = paths
-		.par_iter()
-		.map(|path| {
-			let result = process_file(path);
+	paths.par_iter().for_each(|path| {
+		match process_file_recursive(path) {
+			Ok(content) => {
+				fs::write(path, content).expect("Unable to write file");
 
-			match result {
-				Ok(content) => {
-					fs::write(path, content).expect("Unable to write file");
-
-					println!("Processed: {:?}", path);
-				},
-				Err(e) => eprintln!("Error processing {:?}: {}", path, e),
-			}
-		})
-		.collect();
+				println!("Processed: {:?}", path);
+			},
+			Err(e) => eprintln!("Error processing {:?}: {}", path, e),
+		}
+	});
 
 	println!("All files processed.");
 
 	Ok(())
 }
 
-fn process_file(path:&Path) -> Result<String, Box<dyn std::error::Error>> {
+fn process_file_recursive(path:&Path) -> Result<String, Box<dyn std::error::Error>> {
 	let cm = SourceMap::default();
 
 	let code = fs::read_to_string(path)?;
@@ -42,11 +37,20 @@ fn process_file(path:&Path) -> Result<String, Box<dyn std::error::Error>> {
 
 	let mut parser = Parser::new_from(lexer);
 
-	let module = parser.parse_module()?;
+	let mut module = parser.parse_module()?;
 
 	let mut inliner = Inliner::new(&cm);
 
-	let module = inliner.inline(module);
+	loop {
+		let new_module = inliner.inline(module);
+
+		if !inliner.inlined {
+			break;
+		}
+		module = new_module;
+
+		inliner = Inliner::new(&cm); // Reset for next iteration
+	}
 
 	let mut buf = Vec::new();
 
@@ -65,14 +69,16 @@ struct Inliner<'a> {
 	cm:&'a SourceMap,
 	var_usage:HashMap<String, usize>,
 	var_definitions:HashMap<String, Expr>,
+	inlined:bool,
 }
 
 impl<'a> Inliner<'a> {
 	fn new(cm:&'a SourceMap) -> Self {
-		Inliner { cm, var_usage:HashMap::new(), var_definitions:HashMap::new() }
+		Inliner { cm, var_usage:HashMap::new(), var_definitions:HashMap::new(), inlined:false }
 	}
 
 	fn inline(&mut self, mut module:Module) -> Module {
+		self.inlined = false; // Reset inlined flag
 		module.visit_mut_with(self);
 
 		module
@@ -105,6 +111,8 @@ impl<'a> VisitMut for Inliner<'a> {
 						if *count == 1 {
 							*expr = init.clone();
 
+							self.inlined = true;
+
 							return;
 						}
 					}
@@ -125,7 +133,8 @@ impl<'a> VisitMut for Inliner<'a> {
 						let name = sym.to_string();
 
 						if let Some(&1) = self.var_usage.get(&name) {
-							// Skip vars that are used only once
+							self.inlined = true;
+
 							continue;
 						}
 					}
