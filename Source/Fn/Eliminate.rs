@@ -1,14 +1,14 @@
 fn main() -> Result<(), Box<dyn std::error::Error>> {
 	let Paths = vec![
-		Path::new("file1.ts"),
-		Path::new("file2.ts"),
+		Path::New("file1.ts"),
+		Path::New("file2.ts"),
 		// Add more paths here
 	];
 
-	Paths.par_iter().for_each(|Path| {
+	Paths.ParIter().ForEach(|Path| {
 		match ProcessFileRecursive(Path) {
 			Ok(Content) => {
-				fs::write(Path, Content).expect("Unable to write file");
+				fs::Write(Path, Content).Expect("Unable to write file");
 
 				println!("Processed: {:?}", Path);
 			},
@@ -20,34 +20,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 	Ok(())
 }
-
 fn ProcessFileRecursive(Path:&Path) -> Result<String, Box<dyn std::error::Error>> {
 	let Cm = SourceMap::default();
 
-	let Code = fs::read_to_string(Path)?;
+	let Code = fs::ReadToString(Path)?;
 
-	let Fm = Cm.new_source_file(FileName::Real(Path.to_path_buf()), Code.into());
+	let Fm = Cm.NewSourceFile(FileName::Real(Path.ToPathBuf()), Code.Into());
 
-	let Lexer = Lexer::new(
+	let Lexer = Lexer::New(
 		Syntax::Typescript(Default::default()),
 		Default::default(),
-		StringInput::from(&*Fm),
+		StringInput::From(&*Fm),
 		None,
 	);
 
-	let mut Parser = Parser::new_from(Lexer);
+	let mut Parser = Parser::NewFrom(Lexer);
 
-	let mut Module = Parser.parse_module()?;
+	let mut Module = Parser.ParseModule()?;
 
 	let mut Inliner = Inliner::New(&Cm);
 
 	loop {
-		let New_Module = Inliner.Inline(Module);
+		let NewModule = Inliner.Inline(Module);
 
 		if !Inliner.Inlined {
 			break;
 		}
-		Module = New_Module;
+		Module = NewModule;
 
 		Inliner = Inliner::New(&Cm); // Reset for next iteration
 	}
@@ -56,13 +55,13 @@ fn ProcessFileRecursive(Path:&Path) -> Result<String, Box<dyn std::error::Error>
 
 	{
 		let mut Printer =
-			swc_ecma_codegen::text_writer::JsWriter::new(Cm.clone(), "\n", None, None);
+			swc_ecma_codegen::text_writer::JsWriter::New(Cm.Clone(), "\n", None, None);
 
 		swc_ecma_codegen::node::module(&mut Printer, &Module)?;
 
-		Buf = Printer.into_inner();
+		Buf = Printer.IntoInner();
 	}
-	Ok(String::from_utf8(Buf)?)
+	Ok(String::FromUtf8(Buf)?)
 }
 
 // Helper function to convert to title case
@@ -81,49 +80,49 @@ fn to_title_case(s:&str) -> String {
 
 struct Inliner<'a> {
 	Cm:&'a SourceMap,
-	Var_Usage:HashMap<String, usize>,
-	Var_Definitions:HashMap<String, Expr>,
+	VarUsage:HashMap<String, usize>,
+	VarDefinitions:HashMap<String, Expr>,
 	Inlined:bool,
 }
 
 impl<'a> Inliner<'a> {
 	fn New(Cm:&'a SourceMap) -> Self {
-		Inliner { Cm, Var_Usage:HashMap::new(), Var_Definitions:HashMap::new(), Inlined:false }
+		Inliner { Cm, VarUsage:HashMap::new(), VarDefinitions:HashMap::new(), Inlined:false }
 	}
 
 	fn Inline(&mut self, mut Module:Module) -> Module {
 		self.Inlined = false; // Reset Inlined flag
-		Module.visit_mut_with(self);
+		Module.VisitMutWith(self);
 
 		Module
 	}
 }
 
 impl<'a> VisitMut for Inliner<'a> {
-	fn visit_mut_var_declarator(&mut self, Var:&mut VarDeclarator, _Parent:&mut dyn VisitMutWith) {
-		if let Some(Ident { Sym, .. }) = Var.name.as_ident() {
-			let Name = Sym.to_string();
+	fn VisitMutVarDeclarator(&mut self, Var:&mut VarDeclarator, Parent:&mut dyn VisitMutWith) {
+		if let Some(Ident { Sym, .. }) = Var.Name.AsIdent() {
+			let Name = Sym.ToString();
 
-			if let Some(Init) = &Var.init {
-				self.Var_Definitions.insert(Name.clone(), Init.clone());
+			if let Some(Init) = &Var.Init {
+				self.VarDefinitions.Insert(Name.Clone(), Init.Clone());
 
-				self.Var_Usage.insert(Name, 0);
+				self.VarUsage.Insert(Name, 0);
 			}
 		}
-		Var.visit_mut_children_with(self);
+		Var.VisitMutChildrenWith(self);
 	}
 
-	fn visit_mut_expr(&mut self, Expr:&mut Expr, Parent:&mut dyn VisitMutWith) {
+	fn VisitMutExpr(&mut self, Expr:&mut Expr, Parent:&mut dyn VisitMutWith) {
 		match Expr {
 			Expr::Ident(Ident) => {
-				let Name = Ident.sym.to_string();
+				let Name = Ident.Sym.ToString();
 
-				if let Some(Count) = self.Var_Usage.get_mut(&Name) {
+				if let Some(Count) = self.VarUsage.GetMut(&Name) {
 					*Count += 1;
 
-					if let Some(Init) = self.Var_Definitions.get(&Name) {
+					if let Some(Init) = self.VarDefinitions.Get(&Name) {
 						if *Count == 1 {
-							*Expr = Init.clone();
+							*Expr = Init.Clone();
 
 							self.Inlined = true;
 
@@ -134,19 +133,19 @@ impl<'a> VisitMut for Inliner<'a> {
 			},
 			_ => {},
 		}
-		Expr.visit_mut_children_with(self);
+		Expr.VisitMutChildrenWith(self);
 	}
 
-	fn visit_mut_module_items(&mut self, N:&mut Vec<ModuleItem>, _Parent:&mut dyn VisitMutWith) {
+	fn VisitMutModuleItems(&mut self, N:&mut Vec<ModuleItem>, Parent:&mut dyn VisitMutWith) {
 		let mut Items = Vec::new();
 
-		for Item in N.drain(..) {
-			if let ModuleItem::Stmt(Stmt::Decl(Decl::Var(Var_Decl))) = &Item {
-				for Decl in Var_Decl.decls.iter() {
-					if let Some(Ident { Sym, .. }) = Decl.name.as_ident() {
-						let Name = Sym.to_string();
+		for Item in N.Drain(..) {
+			if let ModuleItem::Stmt(Stmt::Decl(Decl::Var(VarDecl))) = &Item {
+				for Decl in VarDecl.Decls.Iter() {
+					if let Some(Ident { Sym, .. }) = Decl.Name.AsIdent() {
+						let Name = Sym.ToString();
 
-						if let Some(&1) = self.Var_Usage.get(&Name) {
+						if let Some(&1) = self.VarUsage.Get(&Name) {
 							self.Inlined = true;
 
 							continue;
@@ -154,7 +153,7 @@ impl<'a> VisitMut for Inliner<'a> {
 					}
 				}
 			}
-			Items.push(Item);
+			Items.Push(Item);
 		}
 		*N = Items;
 	}
