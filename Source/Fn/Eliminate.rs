@@ -26,7 +26,7 @@ fn ProcessFileRecursive(Path:&Path) -> io::Result<String> {
 
 	let Code = fs::ReadToString(Path)?;
 
-	let Fm = Cm.new_source_file(FileName::Real(Path.to_path_buf()), Code);
+	let Fm = Cm.new_source_file(Rc::new(FileName::Real(Path.to_path_buf())), Code);
 
 	let Lexer = Lexer::new(
 		Syntax::Typescript(Default::default()),
@@ -35,10 +35,10 @@ fn ProcessFileRecursive(Path:&Path) -> io::Result<String> {
 		None,
 	);
 
-	let mut Parser = Parser::NewFrom(Lexer);
+	let mut Parser = Parser::new_from(Lexer);
 
 	let mut Module = Parser
-		.ParseModule()
+		.parse_module()
 		.map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
 
 	let mut Inliner = Inliner::New(&Cm);
@@ -49,6 +49,7 @@ fn ProcessFileRecursive(Path:&Path) -> io::Result<String> {
 		if !Inliner.Inlined {
 			break;
 		}
+
 		Module = NewModule;
 
 		Inliner = Inliner::New(&Cm); // Reset for next iteration
@@ -57,15 +58,15 @@ fn ProcessFileRecursive(Path:&Path) -> io::Result<String> {
 	let mut Buf = Vec::new();
 
 	{
-		let mut Printer =
-			swc_ecma_codegen::text_writer::JsWriter::New(Cm.Clone(), "\n", None, None);
+		let mut Printer = JsWriter::new(Rc::new(Cm), "\n", None, None);
 
 		swc_ecma_codegen::node::module(&mut Printer, &Module)
 			.map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
 
 		Buf = Printer.IntoInner();
 	}
-	Ok(String::FromUtf8(Buf).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?)
+
+	Ok(String::from_utf8(Buf).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?)
 }
 
 // Helper function to convert to title case
@@ -114,7 +115,7 @@ impl<'a> Inliner<'a> {
 	fn Inline(&mut self, mut Module:Module) -> Module {
 		self.Inlined = false;
 
-		Module.VisitMutWith(self);
+		Module.visit_mut_with(self);
 
 		Module
 	}
@@ -122,51 +123,48 @@ impl<'a> Inliner<'a> {
 
 impl<'a> VisitMut for Inliner<'a> {
 	/// Collects names of variables that are explicitly exported.
-	fn VisitMutExportNamedSpecifier(
+	fn visit_mut_export_named_specifier(
 		&mut self,
 		Export:&mut ExportNamedSpecifier,
 		_Parent:&mut dyn VisitMutWith,
 	) {
-		if let ExportSpecifier::Named(ExportNamedSpecifier { Orig: Ident { Sym, .. }, .. }) =
-			&Export.Exported
-		{
-			self.ExportedVars.Insert(Sym.ToOwned());
+		if let Some(ModuleExportName::Ident(Ident { sym, .. })) = &Export.exported {
+			self.ExportedVars.insert(sym.to_string());
 		}
 	}
 
 	/// Registers variable declarations for possible inlining, but only
 	/// if the variable isn't exported.
-	fn VisitMutVarDeclarator(&mut self, Var:&mut VarDeclarator, _Parent:&mut dyn VisitMutWith) {
-		if let Some(Ident { Sym, .. }) = Var.Name.AsIdent() {
-			let Name = Sym.ToOwned();
-
-			if !self.ExportedVars.Contains(&Name) {
+	fn visit_mut_var_declarator(&mut self, Var:&mut VarDeclarator, _Parent:&mut dyn VisitMutWith) {
+		if let Pat::Ident(BindingIdent { id: Name, .. }) = Var.name {
+			if !self.ExportedVars.contains(&Name) {
 				// Only inline if not exported
-				if let Some(Init) = &Var.Init {
-					self.VarDefinitions.Insert(Name.Clone(), Init.Clone());
+				if let Some(Init) = &Var.init {
+					self.VarDefinitions.insert(Name.to_string(), (**Init).clone());
 
-					self.VarUsage.Insert(Name, 0);
+					self.VarUsage.insert(Name.to_string(), 0);
 				}
 			}
 		}
-		Var.VisitMutChildrenWith(self);
+
+		Var.visit_mut_children_with(self);
 	}
 
 	/// Attempts to inline variables used only once, but skips exported
 	/// variables.
-	fn VisitMutExpr(&mut self, Expr:&mut Expr, _Parent:&mut dyn VisitMutWith) {
+	fn visit_mut_expr(&mut self, Expr:&mut Expr, _Parent:&mut dyn VisitMutWith) {
 		match Expr {
 			Expr::Ident(Ident) => {
-				let Name = Ident.Sym.ToOwned();
+				let Name = Ident.sym.to_owned();
 
-				if !self.ExportedVars.Contains(&Name) {
+				if !self.ExportedVars.contains(&Name) {
 					// Don't inline exported variables
-					if let Some(Count) = self.VarUsage.GetMut(&Name) {
+					if let Some(Count) = self.VarUsage.get_mut(&Name) {
 						*Count += 1;
 
-						if let Some(Init) = self.VarDefinitions.Get(&Name) {
+						if let Some(Init) = self.VarDefinitions.get(&Name) {
 							if *Count == 1 {
-								*Expr = Init.Clone();
+								*Expr = Init.clone();
 
 								self.Inlined = true;
 
@@ -178,20 +176,23 @@ impl<'a> VisitMut for Inliner<'a> {
 			},
 			_ => {},
 		}
-		Expr.VisitMutChildrenWith(self);
+
+		Expr.visit_mut_children_with(self);
 	}
 
 	/// Removes variable declarations that are used only once and are not
 	/// exported.
-	fn VisitMutModuleItems(&mut self, Items:&mut Vec<ModuleItem>, _Parent:&mut dyn VisitMutWith) {
-		Items.Retain(|Item| {
+	fn visit_mut_module_items(
+		&mut self,
+		Items:&mut Vec<ModuleItem>,
+		_Parent:&mut dyn VisitMutWith,
+	) {
+		Items.retain(|Item| {
 			if let ModuleItem::Stmt(Stmt::Decl(Decl::Var(VarDecl))) = Item {
-				for Decl in &VarDecl.Decls {
-					if let Some(Ident { Sym, .. }) = Decl.Name.AsIdent() {
-						let Name = Sym.ToOwned();
-
-						if self.VarUsage.Get(&Name) == Some(&1)
-							&& !self.ExportedVars.Contains(&Name)
+				for Decl in &VarDecl.decls {
+					if let Pat::Ident(BindingIdent { id: Name, .. }) = Decl.name {
+						if self.VarUsage.get(&Name) == Some(&1)
+							&& !self.ExportedVars.contains(&Name)
 						{
 							self.Inlined = true;
 
@@ -200,6 +201,7 @@ impl<'a> VisitMut for Inliner<'a> {
 					}
 				}
 			}
+
 			true
 		});
 	}
@@ -208,14 +210,15 @@ impl<'a> VisitMut for Inliner<'a> {
 use std::{
 	collections::{HashMap, HashSet},
 	fs,
-	io::{self, Write},
+	io::{self},
 	path::Path,
+	rc::Rc,
 };
 
 use rayon::prelude::*;
-use swc_common::{FileName, FilePathMapping, SourceMap};
+use swc_common::{FileName, SourceMap};
 use swc_ecma_ast::*;
-use swc_ecma_code_gen::{Config, Emitter, text_writer::JsWriter};
+use swc_ecma_codegen::{Config, Emitter, text_writer::JsWriter};
 use swc_ecma_parser::{Parser, StringInput, Syntax, lexer::Lexer};
 use swc_ecma_visit::{VisitMut, VisitMutWith};
 use tempfile::NamedTempFile;
