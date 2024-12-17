@@ -36,25 +36,25 @@
 /// }
 /// ```
 pub fn Fn(Option { Exclude, Pattern, Root, Separator, .. }:&Option) -> Return {
-	WalkDir::new(Root)
-		.follow_links(false)
-		.into_iter()
-		.filter_map(|Entry| {
-			let Path = Entry.expect("Cannot Entry.").path().display().to_string();
+	// WalkDir::new(Root)
+	// 	.follow_links(false)
+	// 	.into_iter()
+	// 	.filter_map(|Entry| {
+	// 		let Path = Entry.expect("Cannot Entry.").path().display().to_string();
 
-			// TODO: Separate this into Entry/Exclude.rs
-			if !Exclude
-				.clone()
-				.into_iter()
-				.filter(|Exclude| *Pattern != *Exclude)
-				.any(|Exclude| Path.contains(&Exclude))
-			{
-				Some(Path.split(*Separator).map(|Entry| Entry.to_string()).collect())
-			} else {
-				None
-			}
-		})
-		.collect::<Vec<_>>()
+	// 		// TODO: Separate this into Entry/Exclude.rs
+	// 		if !Exclude
+	// 			.clone()
+	// 			.into_iter()
+	// 			.filter(|Exclude| *Pattern != *Exclude)
+	// 			.any(|Exclude| Path.contains(&Exclude))
+	// 		{
+	// 			Some(Path.split(*Separator).map(|Entry| Entry.to_string()).collect())
+	// 		} else {
+	// 			None
+	// 		}
+	// 	})
+	// 	.collect::<Vec<_>>()
 }
 
 use walkdir::WalkDir;

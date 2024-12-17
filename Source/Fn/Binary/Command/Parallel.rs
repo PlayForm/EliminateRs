@@ -34,57 +34,57 @@
 /// This function will log errors if it fails to generate summaries or send
 /// results.
 pub async fn Fn(Option { Entry, Separator, Pattern, Omit, .. }:Option) {
-	let (Allow, mut Mark) = tokio::sync::mpsc::unbounded_channel();
+	// let (Allow, mut Mark) = tokio::sync::mpsc::unbounded_channel();
 
-	let Queue = futures::stream::FuturesUnordered::new();
+	// let Queue = futures::stream::FuturesUnordered::new();
 
-	for Entry in Entry
-		.into_par_iter()
-		.filter_map(|Entry| {
-			Entry
-				.last()
-				.filter(|Last| *Last == &Pattern)
-				.map(|_| Entry[0..Entry.len() - 1].join(&Separator.to_string()))
-		})
-		.collect::<Vec<String>>()
-	{
-		let Omit = Omit.clone();
+	// for Entry in Entry
+	// 	.into_par_iter()
+	// 	.filter_map(|Entry| {
+	// 		Entry
+	// 			.last()
+	// 			.filter(|Last| *Last == &Pattern)
+	// 			.map(|_| Entry[0..Entry.len() - 1].join(&Separator.to_string()))
+	// 	})
+	// 	.collect::<Vec<String>>()
+	// {
+	// 	let Omit = Omit.clone();
 
-		let Allow = Allow.clone();
+	// 	let Allow = Allow.clone();
 
-		Queue.push(tokio::spawn(async move {
-			match crate::Fn::Summary::Fn(
-				&Entry,
-				&crate::Struct::Summary::Difference::Struct { Omit },
-			)
-			.await
-			{
-				Ok(Summary) => {
-					if let Err(_Error) = Allow.send((Entry, Summary)) {
-						eprintln!("Cannot Allow: {}", _Error);
-					}
-				},
+	// 	Queue.push(tokio::spawn(async move {
+	// 		match crate::Fn::Summary::Fn(
+	// 			&Entry,
+	// 			&crate::Struct::Summary::Difference::Struct { Omit },
+	// 		)
+	// 		.await
+	// 		{
+	// 			Ok(Summary) => {
+	// 				if let Err(_Error) = Allow.send((Entry, Summary)) {
+	// 					eprintln!("Cannot Allow: {}", _Error);
+	// 				}
+	// 			},
 
-				Err(_Error) => {
-					eprintln!("Cannot Summary for {}: {}", Entry, _Error)
-				},
-			}
-		}));
-	}
+	// 			Err(_Error) => {
+	// 				eprintln!("Cannot Summary for {}: {}", Entry, _Error)
+	// 			},
+	// 		}
+	// 	}));
+	// }
 
-	tokio::spawn(async move {
-		Queue.collect::<Vec<_>>().await;
+	// tokio::spawn(async move {
+	// 	Queue.collect::<Vec<_>>().await;
 
-		drop(Allow);
-	});
+	// 	drop(Allow);
+	// });
 
-	let mut Output = Vec::new();
+	// let mut Output = Vec::new();
 
-	while let Some((Entry, Summary)) = Mark.recv().await {
-		Output.push((Entry, Summary));
-	}
+	// while let Some((Entry, Summary)) = Mark.recv().await {
+	// 	Output.push((Entry, Summary));
+	// }
 
-	crate::Fn::Summary::Group::Fn(Output);
+	// crate::Fn::Summary::Group::Fn(Output);
 }
 
 use futures::stream::StreamExt;

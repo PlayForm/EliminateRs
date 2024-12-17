@@ -34,36 +34,36 @@
 /// This function will log errors if it fails to generate summaries or send
 /// results.
 pub async fn Fn(Option { Entry, Pattern, Separator, Omit, .. }:Option) {
-	let Queue = futures::future::join_all(
-		Entry
-			.into_iter()
-			.filter_map(|Entry| {
-				Entry
-					.last()
-					.filter(|Last| *Last == &Pattern)
-					.map(|_| Entry[0..Entry.len() - 1].join(&Separator.to_string()))
-			})
-			.map(|Entry| {
-				let Omit = Omit.clone();
+	// let Queue = futures::future::join_all(
+	// 	Entry
+	// 		.into_iter()
+	// 		.filter_map(|Entry| {
+	// 			Entry
+	// 				.last()
+	// 				.filter(|Last| *Last == &Pattern)
+	// 				.map(|_| Entry[0..Entry.len() - 1].join(&Separator.to_string()))
+	// 		})
+	// 		.map(|Entry| {
+	// 			let Omit = Omit.clone();
 
-				async move {
-					match crate::Fn::Summary::Fn(
-						&Entry,
-						&crate::Struct::Summary::Difference::Struct { Omit },
-					)
-					.await
-					{
-						Ok(Summary) => Ok((Entry, Summary)),
-						Err(_Error) => {
-							Err(format!("Error generating summary for {}: {}", Entry, _Error))
-						},
-					}
-				}
-			}),
-	)
-	.await;
+	// 			async move {
+	// 				match crate::Fn::Summary::Fn(
+	// 					&Entry,
+	// 					&crate::Struct::Summary::Difference::Struct { Omit },
+	// 				)
+	// 				.await
+	// 				{
+	// 					Ok(Summary) => Ok((Entry, Summary)),
+	// 					Err(_Error) => {
+	// 						Err(format!("Error generating summary for {}: {}", Entry, _Error))
+	// 					},
+	// 				}
+	// 			}
+	// 		}),
+	// )
+	// .await;
 
-	crate::Fn::Summary::Group::Fn(Queue.into_iter().filter_map(Result::ok).collect::<Vec<_>>());
+	// crate::Fn::Summary::Group::Fn(Queue.into_iter().filter_map(Result::ok).collect::<Vec<_>>());
 }
 
 use crate::Struct::Binary::Command::Entry::Struct as Option;

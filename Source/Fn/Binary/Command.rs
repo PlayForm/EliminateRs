@@ -42,10 +42,10 @@
 /// This function will panic if there are issues with the argument definitions
 /// or parsing.
 pub fn Fn() -> ArgMatches {
-	Command::new("Summary")
+	Command::new("Eliminate")
 		.version(env!("CARGO_PKG_VERSION"))
 		.author("🖋️ Source — 👐🏻 Open — <Source/Open@PlayForm.LTD>")
-		.about("🗣️ Summary —")
+		.about("↘️ Eliminate —")
 		.arg(
 			Arg::new("Exclude")
 				.short('E')
