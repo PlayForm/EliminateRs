@@ -138,7 +138,7 @@ impl<'a> VisitMut for Inliner<'a> {
 		&mut self,
 		Var:&mut VarDeclarator,
 	) {
-		if let Pat::Ident(BindingIdent { id, .. }) = Var.name {
+		if let Pat::Ident(BindingIdent { id, .. }) = &Var.name {
 			let Name:String = id.sym.to_string(); // Convert to String right away
 
 			if !self.ExportedVars.contains(&Name) {
