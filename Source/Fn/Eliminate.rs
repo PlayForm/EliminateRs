@@ -1,17 +1,37 @@
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+	let paths = vec![
+		Path::new("file1.ts"),
+		Path::new("file2.ts"),
+		// Add more paths here
+	];
+
+	let results:Vec<_> = paths
+		.par_iter()
+		.map(|path| {
+			let result = process_file(path);
+
+			match result {
+				Ok(content) => {
+					fs::write(path, content).expect("Unable to write file");
+
+					println!("Processed: {:?}", path);
+				},
+				Err(e) => eprintln!("Error processing {:?}: {}", path, e),
+			}
+		})
+		.collect();
+
+	println!("All files processed.");
+
+	Ok(())
+}
+
+fn process_file(path:&Path) -> Result<String, Box<dyn std::error::Error>> {
 	let cm = SourceMap::default();
 
-	let code = r#"
-    let a = 5;
-	
-    let b = a + 1;
-	
-    let c = b * 2;
-	
-    console.log(c);
-    "#;
+	let code = fs::read_to_string(path)?;
 
-	let fm = cm.new_source_file(FileName::Anon, code.into());
+	let fm = cm.new_source_file(FileName::Real(path.to_path_buf()), code.into());
 
 	let lexer = Lexer::new(
 		Syntax::Typescript(Default::default()),
@@ -22,23 +42,23 @@ fn main() {
 
 	let mut parser = Parser::new_from(lexer);
 
-	match parser.parse_module() {
-		Ok(mut module) => {
-			let mut inliner = Inliner::new(&cm);
+	let module = parser.parse_module()?;
 
-			module.visit_mut_with(&mut inliner);
+	let mut inliner = Inliner::new(&cm);
 
-			let mut printer =
-				swc_ecma_codegen::text_writer::JsWriter::new(cm.clone(), "\n", None, None);
+	let module = inliner.inline(module);
 
-			swc_ecma_codegen::node::module(&mut printer, &module).unwrap();
+	let mut buf = Vec::new();
 
-			println!("{}", printer.into_inner());
-		},
-		Err(err) => {
-			eprintln!("Parsing error: {:?}", err);
-		},
+	{
+		let mut printer =
+			swc_ecma_codegen::text_writer::JsWriter::new(cm.clone(), "\n", None, None);
+
+		swc_ecma_codegen::node::module(&mut printer, &module)?;
+
+		buf = printer.into_inner();
 	}
+	Ok(String::from_utf8(buf)?)
 }
 
 struct Inliner<'a> {
@@ -50,6 +70,12 @@ struct Inliner<'a> {
 impl<'a> Inliner<'a> {
 	fn new(cm:&'a SourceMap) -> Self {
 		Inliner { cm, var_usage:HashMap::new(), var_definitions:HashMap::new() }
+	}
+
+	fn inline(&mut self, mut module:Module) -> Module {
+		module.visit_mut_with(self);
+
+		module
 	}
 }
 
@@ -111,9 +137,10 @@ impl<'a> VisitMut for Inliner<'a> {
 	}
 }
 
-use std::collections::HashMap;
+use std::{collections::HashMap, fs, path::Path};
 
-use swc_common::{SourceMap, Span};
+use rayon::prelude::*;
+use swc_common::{FileName, SourceMap};
 use swc_ecma_ast::*;
 use swc_ecma_parser::{Parser, StringInput, Syntax, lexer::Lexer};
 use swc_ecma_visit::{VisitMut, VisitMutWith};
