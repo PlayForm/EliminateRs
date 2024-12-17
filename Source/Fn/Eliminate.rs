@@ -219,3 +219,5 @@ use swc_ecma_code_gen::{Config, Emitter, text_writer::JsWriter};
 use swc_ecma_parser::{Parser, StringInput, Syntax, lexer::Lexer};
 use swc_ecma_visit::{VisitMut, VisitMutWith};
 use tempfile::NamedTempFile;
+
+mod Test;
