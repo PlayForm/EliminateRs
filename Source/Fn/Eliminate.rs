@@ -123,10 +123,7 @@ impl<'a> Inliner<'a> {
 
 impl<'a> VisitMut for Inliner<'a> {
 	/// Collects names of variables that are explicitly exported.
-	fn visit_mut_export_named_specifier(
-		&mut self,
-		Export:&mut ExportNamedSpecifier,
-	) {
+	fn visit_mut_export_named_specifier(&mut self, Export:&mut ExportNamedSpecifier) {
 		if let ModuleExportName::Ident(Ident { sym, .. }) = &Export.orig {
 			self.ExportedVars.insert(sym.to_string());
 		}
@@ -134,10 +131,7 @@ impl<'a> VisitMut for Inliner<'a> {
 
 	/// Registers variable declarations for possible inlining, but only
 	/// if the variable isn't exported.
-	fn visit_mut_var_declarator(
-		&mut self,
-		Var:&mut VarDeclarator,
-	) {
+	fn visit_mut_var_declarator(&mut self, Var:&mut VarDeclarator) {
 		if let Pat::Ident(BindingIdent { id, .. }) = &Var.name {
 			let Name:String = id.sym.to_string(); // Convert to String right away
 
@@ -186,10 +180,7 @@ impl<'a> VisitMut for Inliner<'a> {
 
 	/// Removes variable declarations that are used only once and are not
 	/// exported.
-	fn visit_mut_module_items(
-		&mut self,
-		Items:&mut Vec<ModuleItem>
-	) {
+	fn visit_mut_module_items(&mut self, Items:&mut Vec<ModuleItem>) {
 		Items.retain(|Item| {
 			if let ModuleItem::Stmt(Stmt::Decl(Decl::Var(VarDecl))) = Item {
 				for Decl in &VarDecl.decls {

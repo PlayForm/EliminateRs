@@ -63,7 +63,8 @@ pub async fn Fn(Option { Entry, Pattern, Separator, Omit, .. }:Option) {
 	// )
 	// .await;
 
-	// crate::Fn::Summary::Group::Fn(Queue.into_iter().filter_map(Result::ok).collect::<Vec<_>>());
+	// crate::Fn::Summary::Group::Fn(Queue.into_iter().filter_map(Result::ok).
+	// collect::<Vec<_>>());
 }
 
 use crate::Struct::Binary::Command::Entry::Struct as Option;
