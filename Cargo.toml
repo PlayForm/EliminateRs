@@ -9,7 +9,7 @@ path = "Source/Library.rs"
 [dependencies]
 # pieces = { version = "1.0.0", path = "../Pieces" }
 chrono = { version = "0.4.39" }
-clap = { features = ["derive"], version = "4.5.23" }
+clap = { features = ["derive"], version = "4.5.26" }
 dashmap = { version = "6.1.0" }
 futures = { version = "0.3.31" }
 git2 = { version = "0.20.0" }
@@ -20,10 +20,10 @@ regex = { version = "1.11.1" }
 swc_common = "5.0.0"
 swc_ecma_ast = "5.0.1"
 swc_ecma_codegen = "5.0.1"
-swc_ecma_parser = "6.0.1"
+swc_ecma_parser = "6.0.2"
 swc_ecma_visit = "5.0.0"
 tempfile = "3.15.0"
-tokio = { version = "1.42.0", features = ["full"] }
+tokio = { version = "1.43.0", features = ["full"] }
 unbug = { version = "0.4.0" }
 walkdir = { version = "2.5.0" }
 
