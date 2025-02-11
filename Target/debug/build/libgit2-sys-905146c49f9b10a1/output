@@ -1,0 +1,627 @@
+cargo:rustc-check-cfg=cfg(libgit2_vendored,)
+cargo:rerun-if-env-changed=LIBGIT2_NO_VENDOR
+cargo:rerun-if-env-changed=LIBGIT2_NO_PKG_CONFIG
+cargo:rerun-if-env-changed=PKG_CONFIG_x86_64-pc-windows-msvc
+cargo:rerun-if-env-changed=PKG_CONFIG_x86_64_pc_windows_msvc
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG
+cargo:rerun-if-env-changed=PKG_CONFIG
+cargo:rerun-if-env-changed=LIBGIT2_STATIC
+cargo:rerun-if-env-changed=LIBGIT2_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_STATIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64-pc-windows-msvc
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64_pc_windows_msvc
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64-pc-windows-msvc
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64_pc_windows_msvc
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64-pc-windows-msvc
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64_pc_windows_msvc
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_SYSROOT_DIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR
+cargo:rerun-if-env-changed=LIBGIT2_STATIC
+cargo:rerun-if-env-changed=LIBGIT2_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_STATIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64-pc-windows-msvc
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64_pc_windows_msvc
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64-pc-windows-msvc
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64_pc_windows_msvc
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64-pc-windows-msvc
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64_pc_windows_msvc
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_SYSROOT_DIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR
+cargo:warning=failed to probe system libgit2: Could not run `PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1 pkg-config --libs --cflags libgit2 libgit2 >= 1.9.0 libgit2 < 1.10.0`
+The pkg-config command could not be found.
+
+Most likely, you need to install a pkg-config package for your OS.
+
+If you've already installed it, ensure the pkg-config command is one of the
+directories in the PATH environment variable.
+
+If you did not expect this build to link to a pre-installed system library,
+then check documentation of the libgit2-sys crate for an option to
+build the library from source, or disable features or dependencies
+that require pkg-config.
+cargo:rustc-cfg=libgit2_vendored
+libgit2/include\git2\annotated_commit.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\annotated_commit.h
+libgit2/include\git2\apply.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\apply.h
+libgit2/include\git2\attr.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\attr.h
+libgit2/include\git2\blame.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\blame.h
+libgit2/include\git2\blob.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\blob.h
+libgit2/include\git2\branch.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\branch.h
+libgit2/include\git2\buffer.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\buffer.h
+libgit2/include\git2\cert.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\cert.h
+libgit2/include\git2\checkout.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\checkout.h
+libgit2/include\git2\cherrypick.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\cherrypick.h
+libgit2/include\git2\clone.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\clone.h
+libgit2/include\git2\commit.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\commit.h
+libgit2/include\git2\common.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\common.h
+libgit2/include\git2\config.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\config.h
+libgit2/include\git2\credential.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\credential.h
+libgit2/include\git2\credential_helpers.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\credential_helpers.h
+libgit2/include\git2\cred_helpers.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\cred_helpers.h
+libgit2/include\git2\deprecated.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\deprecated.h
+libgit2/include\git2\describe.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\describe.h
+libgit2/include\git2\diff.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\diff.h
+libgit2/include\git2\email.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\email.h
+libgit2/include\git2\errors.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\errors.h
+libgit2/include\git2\experimental.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\experimental.h
+libgit2/include\git2\filter.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\filter.h
+libgit2/include\git2\global.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\global.h
+libgit2/include\git2\graph.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\graph.h
+libgit2/include\git2\ignore.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\ignore.h
+libgit2/include\git2\index.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\index.h
+libgit2/include\git2\indexer.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\indexer.h
+libgit2/include\git2\mailmap.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\mailmap.h
+libgit2/include\git2\merge.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\merge.h
+libgit2/include\git2\message.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\message.h
+libgit2/include\git2\net.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\net.h
+libgit2/include\git2\notes.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\notes.h
+libgit2/include\git2\object.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\object.h
+libgit2/include\git2\odb.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\odb.h
+libgit2/include\git2\odb_backend.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\odb_backend.h
+libgit2/include\git2\oid.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\oid.h
+libgit2/include\git2\oidarray.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\oidarray.h
+libgit2/include\git2\pack.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\pack.h
+libgit2/include\git2\patch.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\patch.h
+libgit2/include\git2\pathspec.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\pathspec.h
+libgit2/include\git2\proxy.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\proxy.h
+libgit2/include\git2\rebase.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\rebase.h
+libgit2/include\git2\refdb.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\refdb.h
+libgit2/include\git2\reflog.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\reflog.h
+libgit2/include\git2\refs.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\refs.h
+libgit2/include\git2\refspec.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\refspec.h
+libgit2/include\git2\remote.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\remote.h
+libgit2/include\git2\repository.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\repository.h
+libgit2/include\git2\reset.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\reset.h
+libgit2/include\git2\revert.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\revert.h
+libgit2/include\git2\revparse.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\revparse.h
+libgit2/include\git2\revwalk.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\revwalk.h
+libgit2/include\git2\signature.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\signature.h
+libgit2/include\git2\stash.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\stash.h
+libgit2/include\git2\status.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\status.h
+libgit2/include\git2\stdint.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\stdint.h
+libgit2/include\git2\strarray.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\strarray.h
+libgit2/include\git2\submodule.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\submodule.h
+libgit2/include\git2\sys\alloc.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\alloc.h
+libgit2/include\git2\sys\commit.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\commit.h
+libgit2/include\git2\sys\commit_graph.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\commit_graph.h
+libgit2/include\git2\sys\config.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\config.h
+libgit2/include\git2\sys\cred.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\cred.h
+libgit2/include\git2\sys\credential.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\credential.h
+libgit2/include\git2\sys\diff.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\diff.h
+libgit2/include\git2\sys\email.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\email.h
+libgit2/include\git2\sys\errors.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\errors.h
+libgit2/include\git2\sys\filter.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\filter.h
+libgit2/include\git2\sys\hashsig.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\hashsig.h
+libgit2/include\git2\sys\index.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\index.h
+libgit2/include\git2\sys\mempack.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\mempack.h
+libgit2/include\git2\sys\merge.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\merge.h
+libgit2/include\git2\sys\midx.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\midx.h
+libgit2/include\git2\sys\odb_backend.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\odb_backend.h
+libgit2/include\git2\sys\openssl.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\openssl.h
+libgit2/include\git2\sys\path.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\path.h
+libgit2/include\git2\sys\refdb_backend.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\refdb_backend.h
+libgit2/include\git2\sys\refs.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\refs.h
+libgit2/include\git2\sys\remote.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\remote.h
+libgit2/include\git2\sys\repository.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\repository.h
+libgit2/include\git2\sys\stream.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\stream.h
+libgit2/include\git2\sys\transport.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\sys\transport.h
+libgit2/include\git2\tag.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\tag.h
+libgit2/include\git2\trace.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\trace.h
+libgit2/include\git2\transaction.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\transaction.h
+libgit2/include\git2\transport.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\transport.h
+libgit2/include\git2\tree.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\tree.h
+libgit2/include\git2\types.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\types.h
+libgit2/include\git2\version.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\version.h
+libgit2/include\git2\worktree.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2\worktree.h
+libgit2/include\git2.h => D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\include\git2.h
+OPT_LEVEL = Some(0)
+TARGET = Some(x86_64-pc-windows-msvc)
+cargo:rerun-if-env-changed=VCINSTALLDIR
+VCINSTALLDIR = None
+cargo:rerun-if-env-changed=VSTEL_MSBuildProjectFullPath
+VSTEL_MSBuildProjectFullPath = None
+cargo:rerun-if-env-changed=VSCMD_ARG_VCVARS_SPECTRE
+VSCMD_ARG_VCVARS_SPECTRE = None
+cargo:rerun-if-env-changed=WindowsSdkDir
+WindowsSdkDir = None
+cargo:rerun-if-env-changed=WindowsSDKVersion
+WindowsSDKVersion = None
+cargo:rerun-if-env-changed=LIB
+LIB = None
+PATH = Some(D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\deps;D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug;C:\Users\Nikola\.rustup\toolchains\nightly-x86_64-pc-windows-msvc\lib\rustlib\x86_64-pc-windows-msvc\lib;C:\Program Files\Python313\Scripts\;C:\Program Files\Python313\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files\dotnet\;C:\Program Files (x86)\Incredibuild;C:\Program Files\PowerShell\7-preview\preview;C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Program Files\PuTTY\;C:\Users\Nikola\AppData\Local\nvm;C:\nvm4w\nodejs;C:\Program Files\Cloudflare\Cloudflare WARP\;D:\Tool\pnpm\store;C:\Users\Nikola\.cargo\bin;C:\Users\Nikola\AppData\Local\Programs\oh-my-posh\bin\;C:\Users\Nikola\scoop\shims;C:\Users\Nikola\AppData\Local\UniGetUI\Chocolatey\bin;C:\Users\Nikola\AppData\Local\Microsoft\WindowsApps;C:\Users\Nikola\.dotnet\tools;C:\Users\Nikola\AppData\Roaming\npm;C:\Users\Nikola\AppData\Local\Programs\Microsoft VS Code Insiders\bin;C:\Users\Nikola\AppData\Local\Microsoft\WindowsApps;C:\Users\Nikola\AppData\Local\nvm;C:\nvm4w\nodejs;;C:\Users\Nikola\AppData\Local\Programs\Ollama)
+cargo:rerun-if-env-changed=INCLUDE
+INCLUDE = None
+HOST = Some(x86_64-pc-windows-msvc)
+cargo:rerun-if-env-changed=CC_x86_64-pc-windows-msvc
+CC_x86_64-pc-windows-msvc = None
+cargo:rerun-if-env-changed=CC_x86_64_pc_windows_msvc
+CC_x86_64_pc_windows_msvc = None
+cargo:rerun-if-env-changed=HOST_CC
+HOST_CC = None
+cargo:rerun-if-env-changed=CC
+CC = None
+cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+CRATE_CC_NO_DEFAULTS = None
+CARGO_CFG_TARGET_FEATURE = Some(cmpxchg16b,fxsr,lahfsahf,sse,sse2,sse3,x87)
+DEBUG = Some(true)
+cargo:rerun-if-env-changed=CFLAGS_x86_64-pc-windows-msvc
+CFLAGS_x86_64-pc-windows-msvc = None
+cargo:rerun-if-env-changed=CFLAGS_x86_64_pc_windows_msvc
+CFLAGS_x86_64_pc_windows_msvc = None
+cargo:rerun-if-env-changed=HOST_CFLAGS
+HOST_CFLAGS = None
+cargo:rerun-if-env-changed=CFLAGS
+CFLAGS = None
+CARGO_ENCODED_RUSTFLAGS = Some()
+cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
+apply.c
+attr_file.c
+annotated_commit.c
+attr.c
+blob.c
+blame.c
+attrcache.c
+blame_git.c
+branch.c
+buf.c
+cache.c
+checkout.c
+cherrypick.c
+clone.c
+commit.c
+commit_graph.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+commit_list.c
+config.c
+config_file.c
+config_list.c
+config_cache.c
+config_mem.c
+config_parse.c
+config_snapshot.c
+crlf.c
+delta.c
+describe.c
+diff_driver.c
+diff.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+diff_file.c
+diff_generate.c
+diff_print.c
+diff_parse.c
+diff_stats.c
+diff_tform.c
+diff_xdiff.c
+email.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+fetch.c
+filter.c
+fetchhead.c
+grafts.c
+graph.c
+hashsig.c
+ident.c
+ignore.c
+index.c
+index_map.c
+iterator.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+indexer.c
+merge.c
+mailmap.c
+merge_driver.c
+libgit2.c
+message.c
+midx.c
+merge_file.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+mwindow.c
+notes.c
+odb.c
+object.c
+object_api.c
+odb_loose.c
+odb_mempack.c
+odb_pack.c
+oid.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+oidarray.c
+pack-objects.c
+parse.c
+pack.c
+patch.c
+patch_parse.c
+patch_generate.c
+pathspec.c
+path.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+proxy.c
+push.c
+reader.c
+rebase.c
+refdb.c
+refdb_fs.c
+reflog.c
+refs.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+refspec.c
+remote.c
+repository.c
+reset.c
+revparse.c
+revert.c
+revwalk.c
+settings.c
+signature.c
+status.c
+stash.c
+strarray.c
+submodule.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+sysdir.c
+trace.c
+tag.c
+trailer.c
+transaction.c
+transport.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+tree-cache.c
+tree.c
+alloc.c
+worktree.c
+filebuf.c
+date.c
+futils.c
+fs_path.c
+errors.c
+hash.c
+net.c
+pool.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+pqueue.c
+posix.c
+rand.c
+regexp.c
+runtime.c
+sortedcache.c
+str.c
+thread.c
+strlist.c
+tsort.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+util.c
+utf8.c
+varint.c
+vector.c
+wildmatch.c
+zstream.c
+auth.c
+auth_gssapi.c
+auth_ntlmclient.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+credential_helpers.c
+git.c
+auth_sspi.c
+credential.c
+http.c
+httpparser.c
+httpclient.c
+local.c
+smart.c
+smart_protocol.c
+smart_pkt.c
+ssh.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+ssh_exec.c
+winhttp.c
+ssh_libssh2.c
+openssl_dynamic.c
+openssl_legacy.c
+registry.c
+schannel.c
+mbedtls.c
+openssl.c
+socket.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+stransport.c
+api.c
+llhttp.c
+tls.c
+http.c
+xemit.c
+xdiffi.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+xhistogram.c
+xpatience.c
+xmerge.c
+xprepare.c
+pcre_compile.c
+pcre_byte_order.c
+pcre_chartables.c
+xutils.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+pcre_dfa_exec.c
+pcre_config.c
+pcre_fullinfo.c
+pcre_get.c
+pcre_exec.c
+pcre_jit_compile.c
+pcre_globals.c
+pcre_ord2utf8.c
+pcre_newline.c
+pcre_printint.c
+pcre_maketables.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+pcre_refcount.c
+pcre_study.c
+pcre_string_utils.c
+pcre_tables.c
+pcre_ucd.c
+pcre_xclass.c
+pcre_valid_utf8.c
+pcre_version.c
+stdalloc.c
+failalloc.c
+pcreposix.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+dir.c
+error.c
+map.c
+posix_w32.c
+path_w32.c
+thread.c
+process.c
+precompiled.c
+utf-conv.c
+w32_buffer.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+w32_util.c
+collisiondetect.c
+w32_leakcheck.c
+sha1.c
+ubc_check.c
+win32.c
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+cargo:rerun-if-env-changed=AR_x86_64-pc-windows-msvc
+AR_x86_64-pc-windows-msvc = None
+cargo:rerun-if-env-changed=AR_x86_64_pc_windows_msvc
+AR_x86_64_pc_windows_msvc = None
+cargo:rerun-if-env-changed=HOST_AR
+HOST_AR = None
+cargo:rerun-if-env-changed=AR
+AR = None
+cargo:rerun-if-env-changed=ARFLAGS_x86_64-pc-windows-msvc
+ARFLAGS_x86_64-pc-windows-msvc = None
+cargo:rerun-if-env-changed=ARFLAGS_x86_64_pc_windows_msvc
+ARFLAGS_x86_64_pc_windows_msvc = None
+cargo:rerun-if-env-changed=HOST_ARFLAGS
+HOST_ARFLAGS = None
+cargo:rerun-if-env-changed=ARFLAGS
+ARFLAGS = None
+cargo:rustc-link-search=native=C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\atlmfc\lib\x64
+cargo:rustc-link-lib=static=git2
+cargo:rustc-link-search=native=D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out\build
+cargo:root=D:\Developer\Application\PlayForm\Cargo\Eliminate\Target\debug\build\libgit2-sys-905146c49f9b10a1\out
+cargo:rustc-link-lib=winhttp
+cargo:rustc-link-lib=rpcrt4
+cargo:rustc-link-lib=ole32
+cargo:rustc-link-lib=crypt32
+cargo:rustc-link-lib=secur32
+cargo:rerun-if-changed=libgit2/include
+cargo:rerun-if-changed=libgit2/src
+cargo:rerun-if-changed=libgit2/deps
