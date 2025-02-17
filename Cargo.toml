@@ -8,11 +8,11 @@ path = "Source/Library.rs"
 
 [build-dependencies]
 serde = { version = "1.0.217", features = ["derive"] }
-toml = { version = "0.8.19" }
+toml = { version = "0.8.20" }
 
 [dependencies]
 chrono = { version = "0.4.39" }
-clap = { features = ["derive"], version = "4.5.27" }
+clap = { features = ["derive"], version = "4.5.30" }
 dashmap = { version = "6.1.0" }
 futures = { version = "0.3.31" }
 git2 = { version = "0.20.0" }
@@ -25,7 +25,7 @@ swc_ecma_ast = "5.1.0"
 swc_ecma_codegen = "5.1.0"
 swc_ecma_parser = "7.0.1"
 swc_ecma_visit = "5.0.0"
-tempfile = "3.16.0"
+tempfile = "3.17.1"
 tokio = { version = "1.43.0", features = ["full"] }
 unbug = { version = "0.4.0" }
 walkdir = { version = "2.5.0" }
@@ -45,7 +45,7 @@ autoexamples = false
 autotests = false
 default-run = "Eliminate"
 description = "Eliminate 🗣️"
-edition = "2021"
+edition = "2024"
 include = [
 	"Source/**/*",
 	"LICENSE",
