@@ -5,10 +5,10 @@
 /// asynchronously.
 pub struct Struct {
 	/// The separator used for file paths.
-	pub Separator:Option::Separator,
+	pub Separator: Option::Separator,
 
 	/// A boxed asynchronous function that returns a pinned future.
-	pub Fn:Box<dyn Fn() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>> + Send + 'static>,
+	pub Fn: Box<dyn Fn() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>> + Send + 'static>,
 }
 
 impl Struct {
@@ -25,8 +25,8 @@ impl Struct {
 	/// Returns a new instance of Struct.
 	pub fn Fn() -> Self {
 		Self {
-			Separator:std::path::MAIN_SEPARATOR,
-			Fn:Box::new(|| {
+			Separator: std::path::MAIN_SEPARATOR,
+			Fn: Box::new(|| {
 				Box::pin(async move {
 					let Option = Entry::Struct::Fn(&Option::Struct::Fn(Struct::Fn()));
 

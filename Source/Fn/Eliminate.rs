@@ -21,7 +21,7 @@ fn main() -> io::Result<()> {
 
 /// Recursively processes a TypeScript file, inlining variables until no more
 /// inlining is possible.
-fn ProcessFileRecursive(Path:&Path) -> io::Result<String> {
+fn ProcessFileRecursive(Path: &Path) -> io::Result<String> {
 	let Cm = SourceMap::default();
 
 	let Code = fs::ReadToString(Path)?;
@@ -60,8 +60,7 @@ fn ProcessFileRecursive(Path:&Path) -> io::Result<String> {
 	{
 		let mut Printer = JsWriter::new(Rc::new(Cm), "\n", None, None);
 
-		swc_ecma_codegen::node::module(&mut Printer, &Module)
-			.map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+		swc_ecma_codegen::node::module(&mut Printer, &Module).map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
 
 		Buf = Printer.IntoInner();
 	}
@@ -70,7 +69,7 @@ fn ProcessFileRecursive(Path:&Path) -> io::Result<String> {
 }
 
 // Helper function to convert to title case
-fn to_title_case(s:&str) -> String {
+fn to_title_case(s: &str) -> String {
 	s.chars()
 		.enumerate()
 		.map(|(i, c)| {
@@ -87,32 +86,32 @@ fn to_title_case(s:&str) -> String {
 /// processing TypeScript code.
 struct Inliner<'a> {
 	/// The source map used for tracking source locations.
-	Cm:&'a SourceMap,
+	Cm: &'a SourceMap,
 	/// Counts how many times each variable is used.
-	VarUsage:HashMap<String, usize>,
+	VarUsage: HashMap<String, usize>,
 	/// Stores the initial value expressions for variables.
-	VarDefinitions:HashMap<String, Expr>,
+	VarDefinitions: HashMap<String, Expr>,
 	/// Tracks which variables are exported and should not be inlined.
-	ExportedVars:HashSet<String>,
+	ExportedVars: HashSet<String>,
 	/// Flag to indicate if any inlining occurred during the last pass.
-	Inlined:bool,
+	Inlined: bool,
 }
 
 impl<'a> Inliner<'a> {
 	/// Creates a new `Inliner` instance with the given `SourceMap`.
-	fn New(Cm:&'a SourceMap) -> Self {
+	fn New(Cm: &'a SourceMap) -> Self {
 		Inliner {
 			Cm,
-			VarUsage:HashMap::new(),
-			VarDefinitions:HashMap::new(),
-			ExportedVars:HashSet::new(),
-			Inlined:false,
+			VarUsage: HashMap::new(),
+			VarDefinitions: HashMap::new(),
+			ExportedVars: HashSet::new(),
+			Inlined: false,
 		}
 	}
 
 	/// Performs a single pass of inlining on the given module,
 	/// setting `Inlined` to true if any inlining occurs.
-	fn Inline(&mut self, mut Module:Module) -> Module {
+	fn Inline(&mut self, mut Module: Module) -> Module {
 		self.Inlined = false;
 
 		Module.visit_mut_with(self);
@@ -123,7 +122,7 @@ impl<'a> Inliner<'a> {
 
 impl<'a> VisitMut for Inliner<'a> {
 	/// Collects names of variables that are explicitly exported.
-	fn visit_mut_export_named_specifier(&mut self, Export:&mut ExportNamedSpecifier) {
+	fn visit_mut_export_named_specifier(&mut self, Export: &mut ExportNamedSpecifier) {
 		if let ModuleExportName::Ident(Ident { sym, .. }) = &Export.orig {
 			self.ExportedVars.insert(sym.to_string());
 		}
@@ -131,9 +130,9 @@ impl<'a> VisitMut for Inliner<'a> {
 
 	/// Registers variable declarations for possible inlining, but only
 	/// if the variable isn't exported.
-	fn visit_mut_var_declarator(&mut self, Var:&mut VarDeclarator) {
+	fn visit_mut_var_declarator(&mut self, Var: &mut VarDeclarator) {
 		if let Pat::Ident(BindingIdent { id, .. }) = &Var.name {
-			let Name:String = id.sym.to_string(); // Convert to String right away
+			let Name: String = id.sym.to_string(); // Convert to String right away
 
 			if !self.ExportedVars.contains(&Name) {
 				// Only inline if not exported
@@ -150,7 +149,7 @@ impl<'a> VisitMut for Inliner<'a> {
 
 	/// Attempts to inline variables used only once, but skips exported
 	/// variables.
-	fn visit_mut_expr(&mut self, Expr:&mut Expr, _Parent:&mut dyn VisitMutWith) {
+	fn visit_mut_expr(&mut self, Expr: &mut Expr, _Parent: &mut dyn VisitMutWith) {
 		match Expr {
 			Expr::Ident(Ident { sym, .. }) => {
 				let Name = sym.to_string();
@@ -180,14 +179,12 @@ impl<'a> VisitMut for Inliner<'a> {
 
 	/// Removes variable declarations that are used only once and are not
 	/// exported.
-	fn visit_mut_module_items(&mut self, Items:&mut Vec<ModuleItem>) {
+	fn visit_mut_module_items(&mut self, Items: &mut Vec<ModuleItem>) {
 		Items.retain(|Item| {
 			if let ModuleItem::Stmt(Stmt::Decl(Decl::Var(VarDecl))) = Item {
 				for Decl in &VarDecl.decls {
 					if let Pat::Ident(BindingIdent { id: Name, .. }) = Decl.name {
-						if self.VarUsage.get(&Name) == Some(&1)
-							&& !self.ExportedVars.contains(&Name)
-						{
+						if self.VarUsage.get(&Name) == Some(&1) && !self.ExportedVars.contains(&Name) {
 							self.Inlined = true;
 
 							return false; // Remove this declaration if not exported and used once

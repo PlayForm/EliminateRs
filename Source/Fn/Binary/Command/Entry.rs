@@ -35,7 +35,7 @@
 /// 	println!("{:?}", path);
 /// }
 /// ```
-pub fn Fn(Option { Exclude, Pattern, Root, Separator, .. }:&Option) -> Return {
+pub fn Fn(Option { Exclude, Pattern, Root, Separator, .. }: &Option) -> Return {
 	// WalkDir::new(Root)
 	// 	.follow_links(false)
 	// 	.into_iter()

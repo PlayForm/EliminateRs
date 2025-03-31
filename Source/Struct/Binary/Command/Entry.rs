@@ -6,19 +6,19 @@
 pub struct Struct {
 	/// A vector of vectors, where each inner vector contains the components of
 	/// a file path.
-	pub Entry:Type,
+	pub Entry: Type,
 
 	/// A flag indicating whether to execute commands in parallel.
-	pub Parallel:Parallel,
+	pub Parallel: Parallel,
 
 	/// A string pattern to match against the last element of each entry.
-	pub Pattern:Pattern,
+	pub Pattern: Pattern,
 
 	/// The separator used for file paths.
-	pub Separator:Separator,
+	pub Separator: Separator,
 
 	/// A vector of strings representing patterns to omit.
-	pub Omit:Omit,
+	pub Omit: Omit,
 }
 
 impl Struct {
@@ -36,24 +36,18 @@ impl Struct {
 	/// # Returns
 	///
 	/// Returns a new instance of Struct.
-	pub fn Fn(Option:&Option) -> Self {
+	pub fn Fn(Option: &Option) -> Self {
 		Self {
-			Entry:crate::Fn::Binary::Command::Entry::Fn(Option),
-			Omit:Option.Omit.clone(),
-			Parallel:Option.Parallel,
-			Pattern:Option.Pattern.clone(),
-			Separator:Option.Separator,
+			Entry: crate::Fn::Binary::Command::Entry::Fn(Option),
+			Omit: Option.Omit.clone(),
+			Parallel: Option.Parallel,
+			Pattern: Option.Pattern.clone(),
+			Separator: Option.Separator,
 		}
 	}
 }
 
-use crate::Struct::Binary::Command::Option::{
-	Omit,
-	Parallel,
-	Pattern,
-	Separator,
-	Struct as Option,
-};
+use crate::Struct::Binary::Command::Option::{Omit, Parallel, Pattern, Separator, Struct as Option};
 
 /// Type alias for a vector of vectors, where each inner vector contains the
 /// components of a file path.
