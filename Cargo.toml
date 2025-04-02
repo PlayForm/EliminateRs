@@ -12,7 +12,7 @@ toml = { version = "0.8.20" }
 
 [dependencies]
 chrono = { version = "0.4.40" }
-clap = { features = ["derive"], version = "4.5.32" }
+clap = { features = ["derive"], version = "4.5.35" }
 dashmap = { version = "6.1.0" }
 futures = { version = "0.3.31" }
 git2 = { version = "0.20.1" }
@@ -20,10 +20,10 @@ itertools = { version = "0.14.0" }
 num_cpus = { version = "1.16.0" }
 rayon = { version = "1.10.0" }
 regex = { version = "1.11.1" }
-swc_common = "8.0.0"
-swc_ecma_ast = "8.0.1"
-swc_ecma_codegen = "8.0.2"
-swc_ecma_parser = "10.0.1"
+swc_common = "8.0.1"
+swc_ecma_ast = "8.1.0"
+swc_ecma_codegen = "8.1.0"
+swc_ecma_parser = "11.0.0"
 swc_ecma_visit = "8.0.0"
 tempfile = "3.19.1"
 tokio = { version = "1.44.1", features = ["full"] }
